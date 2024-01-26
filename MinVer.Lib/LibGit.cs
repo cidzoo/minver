@@ -44,6 +44,12 @@ internal class LibGit : IGit
         var headCommitSha = headCommit.Sha;
 
         head = new Commit(headCommitSha);
+        head.Parents.AddRange(headCommit.Parents.Select(p =>
+        {
+            var pc = new Commit(p.Sha);
+            pc.Parents.AddRange(p.Parents.Select(pp => new Commit(pp.Sha)));
+            return pc;
+        }));
 
         return true;
     }
