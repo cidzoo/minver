@@ -7,7 +7,7 @@ namespace MinVer.Lib;
 
 public static class Versioner
 {
-    private static readonly IGit git = new InstalledGit();
+    private static readonly IGit git = new LibGit();
 
     public static Version GetVersion(string workDir, string tagPrefix, MajorMinor minMajorMinor, string buildMeta, VersionPart autoIncrement, IEnumerable<string> defaultPreReleaseIdentifiers, bool ignoreHeight, ILogger log)
     {
