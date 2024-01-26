@@ -48,7 +48,4 @@ internal static class Git
                 .Select(line => line.Split(" ", 2))
                 .Select(tokens => (tokens[1][10..].RemoveFromEnd("^{}"), tokens[0]))
             : Enumerable.Empty<(string, string)>();
-
-    private static string RemoveFromEnd(this string text, string value) =>
-        text.EndsWith(value, StringComparison.OrdinalIgnoreCase) ? text[..^value.Length] : text;
 }
