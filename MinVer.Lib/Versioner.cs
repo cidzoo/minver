@@ -7,6 +7,8 @@ namespace MinVer.Lib;
 
 public static class Versioner
 {
+    private static readonly IGit git = new InstalledGit();
+
     public static Version GetVersion(string workDir, string tagPrefix, MajorMinor minMajorMinor, string buildMeta, VersionPart autoIncrement, IEnumerable<string> defaultPreReleaseIdentifiers, bool ignoreHeight, ILogger log)
     {
         log = log ?? throw new ArgumentNullException(nameof(log));
@@ -33,7 +35,7 @@ public static class Versioner
 
     private static (Version Version, int? Height) GetVersion(string workDir, string tagPrefix, List<string> defaultPreReleaseIdentifiers, ILogger log)
     {
-        if (!Git.IsWorkingDirectory(workDir, log))
+        if (!git.IsWorkingDirectory(workDir, log))
         {
             var version = new Version(defaultPreReleaseIdentifiers);
 
@@ -42,7 +44,7 @@ public static class Versioner
             return (version, default);
         }
 
-        if (!Git.TryGetHead(workDir, out var head, log))
+        if (!git.TryGetHead(workDir, out var head, log))
         {
             var version = new Version(defaultPreReleaseIdentifiers);
 
@@ -51,7 +53,7 @@ public static class Versioner
             return (version, default);
         }
 
-        var tags = Git.GetTags(workDir, log);
+        var tags = git.GetTags(workDir, log);
 
         var orderedCandidates = GetCandidates(head, tags, tagPrefix, defaultPreReleaseIdentifiers, log)
             .OrderBy(candidate => candidate.Version)

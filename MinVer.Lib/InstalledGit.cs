@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace MinVer.Lib;
 
-internal static class Git
+internal class InstalledGit : IGit
 {
     private static readonly char[] newLineChars = ['\r', '\n',];
 
-    public static bool IsWorkingDirectory(string directory, ILogger log) => GitCommand.TryRun("status --short", directory, log, out _);
+    public bool IsWorkingDirectory(string directory, ILogger log) => GitCommand.TryRun("status --short", directory, log, out _);
 
-    public static bool TryGetHead(string directory, [NotNullWhen(returnValue: true)] out Commit? head, ILogger log)
+    public bool TryGetHead(string directory, [NotNullWhen(returnValue: true)] out Commit? head, ILogger log)
     {
         head = null;
 
@@ -41,7 +41,7 @@ internal static class Git
         return true;
     }
 
-    public static IEnumerable<(string Name, string Sha)> GetTags(string directory, ILogger log) =>
+    public IEnumerable<(string Name, string Sha)> GetTags(string directory, ILogger log) =>
         GitCommand.TryRun("show-ref --tags --dereference", directory, log, out var output)
             ? output
                 .Split(newLineChars, StringSplitOptions.RemoveEmptyEntries)
